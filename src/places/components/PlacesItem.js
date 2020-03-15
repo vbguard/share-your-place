@@ -16,6 +16,7 @@ function PlacesItem({
   rating
 }) {
   const [showMap, setShowMap] = useState(false);
+  const [showConfirmModal, setShowCorfirmModal] = useState(false);
   const [mapOptions, setMapOptions] = useState({
     lat: location.lat,
     lng: location.lng,
@@ -31,6 +32,17 @@ function PlacesItem({
     });
   };
 
+  const showDeleteWarningHandler = () => {
+    setShowCorfirmModal(true);
+  };
+
+  const cancelDeleteHandler = () => {
+    setShowCorfirmModal(false);
+  };
+  const confirmDeleteHandler = () => {
+    setShowCorfirmModal(false);
+  };
+
   return (
     <>
       <Modal
@@ -41,9 +53,28 @@ function PlacesItem({
         footerClass="places-item__modal_footer"
         footer={<Button onClick={closeMapHandler}>Close</Button>}
       >
-        {/* <div className="map-container"> */}
-          <Map onChange={onChangeMap} location={mapOptions} className="map-container"/>
-        {/* </div> */}
+        <Map
+          onChange={onChangeMap}
+          location={mapOptions}
+          className="map-container"
+        />
+      </Modal>
+      <Modal
+        show={showConfirmModal}
+        onCancel={cancelDeleteHandler}
+        header="Are you sure?"
+        footerClass="places-item__modal-actions"
+        footer={
+          <>
+            <Button inverse onClick={cancelDeleteHandler}>Cancel</Button>
+            <Button danger onClick={confirmDeleteHandler}>Delete</Button>
+          </>
+        }
+      >
+        <p>
+          Do you want to proceed and delete this place? Please note that it
+          can't be undone thereafter
+        </p>
       </Modal>
       <li className="places-item">
         <Card className="places-item__content">
@@ -60,7 +91,7 @@ function PlacesItem({
               View on map
             </Button>
             <Button to={`/places/${id}`}>Edit</Button>
-            <Button danger>Delete</Button>
+            <Button danger onClick={showDeleteWarningHandler}>Delete</Button>
           </div>
         </Card>
       </li>
